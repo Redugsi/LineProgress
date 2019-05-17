@@ -2,7 +2,6 @@ package com.redugsi.lineprogress
 
 import android.content.Context
 import android.graphics.*
-import android.icu.util.Measure
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
@@ -26,8 +25,8 @@ class LineProgress @kotlin.jvm.JvmOverloads constructor(
     var loadingColor: Int = Color.BLUE
     var elapsedColor: Int = Color.LTGRAY
     var textColor: Int = Color.BLUE
-    var textFontSize: Float = 20F
-    var textPadding: Float  = 8F
+    var textFontSize: Float = 0F
+    var textPadding: Float  = 0F
 
 
     init {
@@ -35,7 +34,7 @@ class LineProgress @kotlin.jvm.JvmOverloads constructor(
         setPaints()
     }
 
-    fun readParams(attrs: AttributeSet?){
+    private fun readParams(attrs: AttributeSet?){
         context.obtainStyledAttributes(attrs, R.styleable.LineProgress).apply {
             try {
                 loadingColor = getColor(R.styleable.LineProgress_loadingColor, Color.BLUE)
@@ -50,7 +49,7 @@ class LineProgress @kotlin.jvm.JvmOverloads constructor(
         }
     }
 
-    fun setPaints(){
+    private fun setPaints(){
         loadingPaint.apply {
             color = loadingColor
             strokeWidth = stroke
@@ -69,19 +68,18 @@ class LineProgress @kotlin.jvm.JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        var heightSize = MeasureSpec.getSize(heightMeasureSpec)
-
         var widthW = resolveSize(widthSize, widthMeasureSpec)
 
         textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textHeight = textBounds.height()
-        val heightW = Math.max(textHeight, stroke.toInt())
+        var heightW = Math.max(textHeight, stroke.toInt())
+
         setMeasuredDimension(widthW, heightW)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        setBounds(100F)
+        setProgressValue(0F)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -95,26 +93,39 @@ class LineProgress @kotlin.jvm.JvmOverloads constructor(
         canvas?.drawRect(loadingBounds, loadingPaint)
     }
 
-    fun drawText(canvas: Canvas?){
+    private fun drawText(canvas: Canvas?){
         textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textHeight = textBounds.height()
         val textLeft = Math.min(loadingBounds.right + textPadding, width - textPaint.measureText(text) - textPadding)
-        canvas?.drawText(text, textLeft, loadingBounds.centerY() + (textHeight * 0.5F), textPaint)
+        canvas?.drawText(text, textLeft, height * 0.5F + (textHeight * 0.5F), textPaint)
     }
 
-    fun setBounds(percent: Float){
-        if (percent < 0 || percent > 100) return
-        var progressDot = width * percent / 100
+    private fun setBounds(percent: Float){
+        val progressDot = width * percent / 100
+        val centerY = height * 0.5F
+        val strokeCenterY = stroke * 0.5F
+        val progressTop = centerY - strokeCenterY
+        val progressBottom = centerY + strokeCenterY
 
         val loadingRight = Math.min(progressDot, width - textPaint.measureText(text) - textPadding * 2)
-        loadingBounds.set(0F, 0F, loadingRight, stroke)
-        elapsedBounds.set(progressDot + textPaint.measureText(text) + textPadding * 2, 0F, width.toFloat(), stroke)
+        loadingBounds.set(0F, progressTop, loadingRight, progressBottom)
+        elapsedBounds.set(progressDot + textPaint.measureText(text) + textPadding * 2, progressTop, width.toFloat(), progressBottom)
     }
 
 
     fun setProgressValue(percent: Float){
+        if (!shouldUpdateProgress(percent)) return
+        setProgressText(percent)
         setBounds(percent)
         invalidate()
+    }
+
+    private fun setProgressText(percent: Float){
+        text = "%${percent.toInt()}"
+    }
+
+    private fun shouldUpdateProgress(percent: Float): Boolean{
+        return percent >= 0 && percent <= 100
     }
 
 

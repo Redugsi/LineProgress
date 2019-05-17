@@ -7,14 +7,21 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <com.redugsi.lineprogress.LineProgress android:layout_width="match_parent"
-                                           android:layout_height="wrap_content"
-                                           app:stroke="8dp"
-                                           app:textPadding="8dp" android:layout_marginTop="8dp"
-                                           app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
-                                           app:layout_constraintBottom_toBottomOf="parent"
-                                           app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-                                           android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
-                                           android:layout_marginEnd="8dp" android:layout_marginRight="8dp"/>
+    <com.redugsi.lineprogress.LineProgress
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:stroke="2dp"
+            android:layout_marginTop="8dp"
+            app:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
+            app:loadingColor="#FF1122"
+            app:elapsedColor="#11FF22"
+            app:textColor="#AAAA00"/>
+
 
 </android.support.constraint.ConstraintLayout>

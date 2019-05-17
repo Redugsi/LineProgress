@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LineProgress">
-        <attr name="loadingColor" format="integer"/>
-        <attr name="elapsedColor" format="integer"/>
+        <attr name="loadingColor" format="color"/>
+        <attr name="elapsedColor" format="color"/>
         <attr name="stroke" format="dimension"/>
-        <attr name="textColor" format="integer"/>
+        <attr name="textColor" format="color"/>
         <attr name="textSize" format="dimension"/>
         <attr name="textPadding" format="dimension"/>
+        <attr name="minValue" format="integer"/>
+        <attr name="maxValue" format="integer"/>
+        <attr name="textFontFamily" format="string"/>
     </declare-styleable>
 </resources>
